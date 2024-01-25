@@ -32,7 +32,7 @@ type (
 
 func main() {
 	const (
-		unixProtocol = "unix"
+		unixProtocol = "unix "
 		socketPath   = "/var/run/libvirt/libvirt-sock"
 		dialTimeout  = 2 * time.Second
 	)
