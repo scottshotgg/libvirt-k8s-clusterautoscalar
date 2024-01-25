@@ -5,12 +5,6 @@
     <libosinfo:libosinfo>
       <libosinfo:os id="http://archlinux.org/archlinux/rolling"/>
     </libosinfo:libosinfo>
-    <!-- <cockpit_machines:data>
-      <cockpit_machines:has_install_phase>false</cockpit_machines:has_install_phase>
-      <cockpit_machines:install_source_type>disk_image</cockpit_machines:install_source_type>
-      <cockpit_machines:install_source>%s</cockpit_machines:install_source>
-      <cockpit_machines:os_variant>archlinux</cockpit_machines:os_variant>
-    </cockpit_machines:data> -->
   </metadata>
   <memory unit='KiB'>4194304</memory>
   <currentMemory unit='KiB'>4194304</currentMemory>
