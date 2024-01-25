@@ -5,16 +5,16 @@
     <libosinfo:libosinfo>
       <libosinfo:os id="http://archlinux.org/archlinux/rolling"/>
     </libosinfo:libosinfo>
-    <cockpit_machines:data>
+    <!-- <cockpit_machines:data>
       <cockpit_machines:has_install_phase>false</cockpit_machines:has_install_phase>
       <cockpit_machines:install_source_type>disk_image</cockpit_machines:install_source_type>
-      <cockpit_machines:install_source>/mnt/smb/proxmox/images/102/vm-102-disk-0.qcow2</cockpit_machines:install_source>
+      <cockpit_machines:install_source>%s</cockpit_machines:install_source>
       <cockpit_machines:os_variant>archlinux</cockpit_machines:os_variant>
-    </cockpit_machines:data>
+    </cockpit_machines:data> -->
   </metadata>
-  <memory unit='KiB'>8388608</memory>
-  <currentMemory unit='KiB'>8388608</currentMemory>
-  <vcpu placement='static'>8</vcpu>
+  <memory unit='KiB'>4194304</memory>
+  <currentMemory unit='KiB'>4194304</currentMemory>
+  <vcpu placement='static'>2</vcpu>
   <resource>
     <partition>/machine</partition>
   </resource>
@@ -28,7 +28,7 @@
     <vmport state='off'/>
   </features>
   <cpu mode='host-passthrough' check='none' migratable='on'>
-    <topology sockets='2' dies='1' cores='4' threads='1'/>
+    <topology sockets='2' dies='1' cores='1' threads='1'/>
   </cpu>
   <clock offset='utc'>
     <timer name='rtc' tickpolicy='catchup'/>
@@ -46,7 +46,7 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2'/>
-      <source file='/mnt/smb/proxmox/images/102/vm-102-disk-0.qcow2' index='1'/>
+      <source file='%s' index='1'/>
       <backingStore/>
       <target dev='vda' bus='virtio'/>
       <alias name='virtio-disk0'/>
@@ -152,7 +152,8 @@
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </controller>
     <interface type='bridge'>
-      <mac address='de:56:2c:32:b2:94'/>
+      <!-- <mac address='de:56:2c:32:b2:94'/> -->
+      <mac address='%s'/>
       <source bridge='virbr0'/>
       <target dev='vnet6'/>
       <model type='virtio'/>
@@ -171,12 +172,6 @@
       <target type='serial' port='0'/>
       <alias name='serial0'/>
     </console>
-    <channel type='unix'>
-      <source mode='bind' path='/run/libvirt/qemu/channel/%d-%s/org.qemu.guest_agent.0'/>
-      <target type='virtio' name='org.qemu.guest_agent.0' state='disconnected'/>
-      <alias name='channel0'/>
-      <address type='virtio-serial' controller='0' bus='0' port='1'/>
-    </channel>
     <input type='tablet' bus='usb'>
       <alias name='input0'/>
       <address type='usb' bus='0' port='1'/>
