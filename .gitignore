@@ -1,0 +1,3 @@
+# Ignore assets
+assets/images/*
+assets/vms/*
