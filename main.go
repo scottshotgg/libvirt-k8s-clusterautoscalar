@@ -15,7 +15,7 @@ func main() {
 		log.Fatal("libvirt_commands.New err:", err)
 	}
 
-	info, err := lvc.CreateVM(context.Background(), 1337, "./test.xml", fmt.Sprintf("TEST-%d", time.Now().Unix()))
+	info, err := lvc.CreateVM(context.Background(), "1337", "./test.xml", fmt.Sprintf("TEST-%d", time.Now().Unix()))
 	if err != nil {
 		log.Fatal("CreateVM err:", err)
 	}

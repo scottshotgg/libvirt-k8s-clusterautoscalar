@@ -1,6 +1,8 @@
 package commands
 
 import (
+	"context"
+
 	"github.com/google/uuid"
 )
 
@@ -8,15 +10,15 @@ import (
 
 type (
 	Commands interface {
-		ListVMs() ([]*VMInfo, error)
-		GetVM(info *VMInfo) (*VMInfo, error)
-		CreateVM() (*VMInfo, error)
-		DeleteVM(info *VMInfo) (*VMInfo, error)
+		ListVMs(ctx context.Context) ([]*VMInfo, error)
+		GetVM(ctx context.Context, uuid uuid.UUID) (*VMInfo, error)
+		CreateVM(ctx context.Context, groupID, templatePath, name string) (*VMInfo, error)
+		DeleteVM(ctx context.Context, uuid uuid.UUID) (*VMInfo, error)
 
-		StartVM(uuid uuid.UUID) (*VMInfo, error)
-		StopVM(uuid uuid.UUID) (*VMInfo, error)
+		StartVM(ctx context.Context, uuid uuid.UUID) (*VMInfo, error)
+		StopVM(ctx context.Context, uuid uuid.UUID) (*VMInfo, error)
 
-		Scale(groupID int) (*VMInfo, error)
+		Scale(ctx context.Context, groupID string) (*VMInfo, error)
 	}
 
 	VMResources struct {
@@ -27,7 +29,7 @@ type (
 	}
 
 	VMMetadata struct {
-		NodeGroup    int    `xml:"node-group"`
+		GroupID      string `xml:"node-group-id"`
 		TemplatePath string `xml:"template-path"`
 		RootDir      string `xml:"root-dir"`
 		MacAddress   string `xml:"mac-address"`

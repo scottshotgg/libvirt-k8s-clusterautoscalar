@@ -8,7 +8,7 @@ import (
 	"github.com/scottshotgg/libvirt-test/pkg/commands"
 )
 
-func (c *Libvirt) Scale(ctx context.Context, groupID int) (*commands.VMInfo, error) {
+func (c *Libvirt) Scale(ctx context.Context, groupID string) (*commands.VMInfo, error) {
 	var vms, err = c.ListVMs(ctx)
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (c *Libvirt) Scale(ctx context.Context, groupID int) (*commands.VMInfo, err
 
 		// We have found a VM in the same group that isn't
 		// started so we don't need to create a new one
-		if vminfo.Metadata.NodeGroup == groupID {
+		if vminfo.Metadata.GroupID == groupID {
 			templatePath = vminfo.Metadata.TemplatePath
 		}
 

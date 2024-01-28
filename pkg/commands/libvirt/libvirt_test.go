@@ -13,7 +13,7 @@ import (
 const (
 	testTemplatePath = "./template.xml"
 	testUUIDStr      = "0f021ddf-833c-42e9-9e41-bac209281816"
-	testGroupID      = 1337
+	testGroupID      = "1337"
 )
 
 var (

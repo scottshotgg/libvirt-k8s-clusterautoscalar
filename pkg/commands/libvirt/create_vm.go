@@ -13,7 +13,7 @@ import (
 	"github.com/scottshotgg/libvirt-test/pkg/commands"
 )
 
-func (c *Libvirt) CreateVM(ctx context.Context, groupID int, templatePath, name string) (*commands.VMInfo, error) {
+func (c *Libvirt) CreateVM(ctx context.Context, groupID, templatePath, name string) (*commands.VMInfo, error) {
 	// TODO: this needs to happen on initialization
 	var b, err = os.ReadFile(templatePath)
 	if err != nil {
