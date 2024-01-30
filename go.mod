@@ -5,6 +5,8 @@ go 1.21.6
 require (
 	github.com/digitalocean/go-libvirt v0.0.0-20221205150000-2939327a8519
 	github.com/google/uuid v1.5.0
+	google.golang.org/grpc v1.58.3
+	google.golang.org/protobuf v1.31.0
 	k8s.io/autoscaler/cluster-autoscaler v0.0.0-20240124104645-a2f890247b01
 )
 
@@ -20,8 +22,6 @@ require (
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230822172742-b8732ec3820d // indirect
-	google.golang.org/grpc v1.58.3 // indirect
-	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	k8s.io/api v0.29.0-alpha.3 // indirect
