@@ -2,8 +2,8 @@ package api
 
 import (
 	"context"
-	"errors"
 	"fmt"
+	"sync"
 
 	"github.com/google/uuid"
 	"github.com/scottshotgg/libvirt-test/pkg/commands"
@@ -19,6 +19,9 @@ type (
 		extgrpc_protos.UnimplementedCloudProviderServer
 
 		c commands.Commands
+
+		sync.RWMutex
+		nodeGroupToTargetSizeMap map[string]int
 	}
 )
 
@@ -27,7 +30,9 @@ var (
 )
 
 func New() *API {
-	return &API{}
+	return &API{
+		nodeGroupToTargetSizeMap: map[string]int{},
+	}
 }
 
 /*
@@ -36,7 +41,20 @@ func New() *API {
 
 func (a *API) NodeGroupIncreaseSize(ctx context.Context, req *extgrpc_protos.NodeGroupIncreaseSizeRequest) (*extgrpc_protos.NodeGroupIncreaseSizeResponse, error) {
 	for i := 0; i < int(req.GetDelta()); i++ {
-		var _, err = a.c.Scale(ctx, req.GetId())
+		var err = func() error {
+			a.Lock()
+			defer a.Unlock()
+
+			var _, err = a.c.Scale(ctx, req.GetId())
+			if err != nil {
+				return err
+			}
+
+			a.nodeGroupToTargetSizeMap[req.GetId()]++
+
+			return nil
+		}()
+
 		if err != nil {
 			return nil, err
 		}
@@ -93,7 +111,6 @@ func (a *API) NodeGroupNodes(ctx context.Context, req *extgrpc_protos.NodeGroupN
 }
 
 func (a *API) NodeGroups(ctx context.Context, req *extgrpc_protos.NodeGroupsRequest) (*extgrpc_protos.NodeGroupsResponse, error) {
-	// var vms, err = a.c.
 	var vms, err = a.c.ListVMs(ctx)
 	if err != nil {
 		return nil, err
@@ -111,7 +128,8 @@ func (a *API) NodeGroups(ctx context.Context, req *extgrpc_protos.NodeGroupsRequ
 		}
 
 		var ng = extgrpc_protos.NodeGroup{
-			Id:      vm.Metadata.GroupID,
+			Id: vm.Metadata.GroupID,
+			// TODO: save these somewhere? How do these get set?
 			MinSize: 1,
 			MaxSize: 5,
 			Debug:   "hippity hoo blah",
@@ -149,6 +167,7 @@ func (a *API) NodeGroupForNode(ctx context.Context, req *extgrpc_protos.NodeGrou
 			Id: vm.Metadata.GroupID,
 			// TODO: track these values in the "cloud" and add controllability here
 			// FIXME: look at some other ones or something
+			// TODO: save these somewhere? How do these get set?
 			MinSize: 1,
 			MaxSize: 5,
 			Debug:   "debug_urself_kid",
@@ -202,13 +221,19 @@ func (a *API) Refresh(ctx context.Context, req *extgrpc_protos.RefreshRequest) (
 func (a *API) NodeGroupTargetSize(ctx context.Context, req *extgrpc_protos.NodeGroupTargetSizeRequest) (*extgrpc_protos.NodeGroupTargetSizeResponse, error) {
 	// TODO: who knows
 	// FIXME: look at some other ones or something
-	return nil, errors.New("not implemented")
-	// return &extgrpc_protos.NodeGroupTargetSizeResponse{
-	// 	TargetSize: 1,
-	// }, nil
+	// return nil, errors.New("not implemented")
+	return &extgrpc_protos.NodeGroupTargetSizeResponse{
+		TargetSize: int32(a.nodeGroupToTargetSizeMap[req.GetId()]),
+	}, nil
 }
 
+// TODO:
+// Maybe we need to store the order that the nodes were spun up in order to delete them in the right order?
+// Maybe we need to check if the target is below the len(nodes) and then delete if needed or will Kube do this?
 func (a *API) NodeGroupDecreaseTargetSize(ctx context.Context, req *extgrpc_protos.NodeGroupDecreaseTargetSizeRequest) (*extgrpc_protos.NodeGroupDecreaseTargetSizeResponse, error) {
-	// TODO: who knows - not really sure what to do here? *shrug*
-	return nil, errors.New("not implemented")
+	// The documentation says that the delta *should* be negative:
+	// https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/externalgrpc/externalgrpc_node_group.go#L122
+	a.nodeGroupToTargetSizeMap[req.GetId()] += int(req.GetDelta())
+
+	return &extgrpc_protos.NodeGroupDecreaseTargetSizeResponse{}, nil
 }
