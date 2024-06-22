@@ -2,8 +2,6 @@ linters-settings:
   errcheck:
     check-type-assertions: true
     check-blank: true
-  govet:
-    check-shadowing: false
   gofmt:
     simplify: false
   gocyclo:
@@ -126,9 +124,17 @@ linters:
   #   - wrapcheck
   #   - wsl
 
-run:
-  skip-files: [".gitignore", ".golangci.yaml", "docker-compose.yaml", "go.mod", "go.sum", "Makefile", "README.md", "VERSION"]
-  skip-dirs:
+issues:
+  exclude-files: 
+    - ".gitignore"
+    - ".golangci.yaml"
+    - "docker-compose.yaml"
+    - "go.mod"
+    - "go.sum"
+    - "Makefile"
+    - "README.md"
+    - "VERSION"
+  exclude-dirs:
   - ".git"
   - "vendor"
   - ".circleci"
@@ -136,12 +142,6 @@ run:
   - "docs"
   - "assets"
   - "deploy"
-
-  allow-parallel-runners: true
-  go: "1.21"
-  tests: false
-
-issues:
   exclude:
   - "should have a package comment, unless it's in another file for this package"
   - "should have comment or be unexported"
@@ -153,3 +153,8 @@ issues:
   #   - "is unused"
   exclude-use-default: false
   max-same-issues: 0
+
+run:
+  allow-parallel-runners: true
+  go: "1.22"
+  tests: false

@@ -18,6 +18,8 @@ func (c *Libvirt) DeleteVM(ctx context.Context, uuid uuid.UUID) error {
 		return ErrNotManaged
 	}
 
+	// TODO: check more specifically
+
 	err = c.l.DomainUndefine(libvirt.Domain{
 		UUID: libvirt.UUID(info.UUID),
 	})
